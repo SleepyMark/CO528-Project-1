@@ -5,7 +5,7 @@ import java.util.Arrays;
  * Write a description of class Candidate_Solution here.
  *
  * @author Mark Cabrera (mc967)
- * @version 1.0.0
+ * @version 1.5.0
  */
 public class Candidate_Solution
 {
@@ -23,49 +23,50 @@ public class Candidate_Solution
     public Candidate_Solution()
     {
            dials =  new double[20];
-           fitnessValue = 99999;
-           prevFitness = 99990;
+           fitnessValue = 99;
+           prevFitness = 1000;
            mutationFactor = 0;
     }
     public void generate()
     {
         for(int i=0; i<dials.length; i++){
-            dials[i] = Math.random() * 10-5;
+            dials[i] = (Math.random() * 10)-5;
         }
+        prevDial = dials[0];
         //System.out.println(Arrays.toString(dials));
     }
     public void mutate()
     {
-        double prev [] = new double[20];
-        System.arraycopy(dials, 0, prev, 0, 20);
         double offset[] = new double[20];
         int index = (int)(Math.random() * 20);
         int operand = (int)(Math.random() * 2);
         
+        
         if(fitnessValue > prevFitness){
+            //If the fitness has moved away from convergence, then it will revert back to previous values
             dials[prevIndex] = prevDial;
         }
+        //Stores the current values & index to the 'previous value'
         prevIndex = index;
         prevDial = dials[index];
+        //If there is positive change, the mutation will still alter the previous dials value
+        if(fitnessValue < prevFitness){
+            index = prevIndex;
+            prevIndex = index;
+        }
+        //Chooses whether to add or subtract dial values
         if(operand == 1){
             dials[index] += (dials[index]/100)*((Math.random() * 10)*mutationFactor);
         }
         if(operand == 0){
             dials[index] -= (dials[index]/100)*(10*mutationFactor);
         }
-        if(dials[index]>5 || dials[index] > -5){
-            generateNewValue(index);
+        //Checks if the dial is between the range -5 to +5
+        if(dials[index]>5 || dials[index] < -5){
+            dials[index] = (Math.random() * 10)-5;
         }
-        for(int i=0; i<dials.length; i++){
-            offset[i] = prev[i]- dials[i];
-        }
-        //System.out.println(Arrays.toString(offset));
     }
-    
-    private void generateNewValue(int index)
-    {
-        dials[index] = (Math.random() * 10)-5;
-    }
+
     public double[] getValues()
     {
         return dials;
@@ -110,5 +111,21 @@ public class Candidate_Solution
      public double getFitness()
     {
         return this.fitnessValue;
+    }
+    
+    protected void setDial(int index, double value)
+    {
+        dials[index] = value;
+    }
+    public Candidate_Solution crossOver(Candidate_Solution b)
+    {
+        Candidate_Solution newSolution = new Candidate_Solution();
+        double bValues [] = b.getValues();
+        for(int dial=0; dial<19; dial++){
+            if(dial<=10) newSolution.setDial(dial, dials[dial]);
+            if(dial>=10) newSolution.setDial(dial, bValues[dial]);
+        }
+        
+        return newSolution;
     }
 }
