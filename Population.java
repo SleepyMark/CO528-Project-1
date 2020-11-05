@@ -16,7 +16,7 @@ public class Population
      */
     public Population(int size)
     {
-        lowest = 0;
+        lowest = 99999;
         population = new ArrayList<Candidate_Solution>(size);
         Candidate_Solution a;
         for(int i=0; i<size-1; i++){

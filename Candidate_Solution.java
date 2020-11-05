@@ -76,35 +76,44 @@ public class Candidate_Solution
     {
         prevFitness = fitnessValue;
         fitnessValue = fit;
-        if(fitnessValue > 1000){
+        if(fitnessValue < 1000){
             mutationFactor = 1;
         }
-        if(fitnessValue > 900){
+        if(fitnessValue < 900){
             mutationFactor = 0.9;
         }
-        if(fitnessValue > 800){
+        if(fitnessValue < 800){
             mutationFactor = 0.8;
         }
-        if(fitnessValue > 700){
+        if(fitnessValue < 700){
             mutationFactor = 0.7;
         }
-        if(fitnessValue > 600){
+        if(fitnessValue < 600){
             mutationFactor = 0.6;
         }
-        if(fitnessValue > 500){
+        if(fitnessValue < 500){
             mutationFactor = 0.5;
         }
-        if(fitnessValue > 400){
+        if(fitnessValue < 400){
             mutationFactor = 0.4;
         }
-        if(fitnessValue > 300){
+        if(fitnessValue < 300){
             mutationFactor = 0.3;
         }
-        if(fitnessValue > 200){
+        if(fitnessValue < 200){
             mutationFactor = 0.2;
         }
-        if(fitnessValue > 100){
+        if(fitnessValue < 100){
             mutationFactor = 0.1;
+        }
+        if(fitnessValue < 50){
+            mutationFactor = 0.05;
+        }
+        if(fitnessValue < 25){
+            mutationFactor = 0.025;
+        }
+        if(fitnessValue < 15){
+            mutationFactor = 0.01;
         }
     }
    
@@ -122,8 +131,10 @@ public class Candidate_Solution
         Candidate_Solution newSolution = new Candidate_Solution();
         double bValues [] = b.getValues();
         for(int dial=0; dial<19; dial++){
-            if(dial<=10) newSolution.setDial(dial, dials[dial]);
-            if(dial>=10) newSolution.setDial(dial, bValues[dial]);
+            //if(dial<=9) newSolution.setDial(dial, dials[dial]);
+            //if(dial>=10) newSolution.setDial(dial, bValues[dial]);
+            if(dial%2==0) newSolution.setDial(dial, dials[dial]);
+            if(dial%2==1) newSolution.setDial(dial, bValues[dial]);
         }
         
         return newSolution;

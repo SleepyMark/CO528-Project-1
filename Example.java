@@ -27,7 +27,7 @@ class Example {
         }*/
 
         //My solution
-        int size = 20;      
+        int size = 25;      
         double [] candidates = new double[size];
         Population p = new Population(size);
         ArrayList<Candidate_Solution> currentPopulation = (ArrayList<Candidate_Solution>)p.getCandidates().clone();
@@ -44,7 +44,7 @@ class Example {
                 p.checkIfLowest(num);
             }
             
-            tempPopulation = p.championOperator(size/2);
+            tempPopulation = p.championOperator(size/4);
             newPopulation.addAll(tempPopulation);
             for(Candidate_Solution a : tempPopulation){
                 currentPopulation.remove(a);
@@ -56,12 +56,12 @@ class Example {
             tempPopulation = p.crossOver(size/4, p.getCandidates());
             
             p.setPopulation(newPopulation);
-            p.mutatePopulation();
-            
             p.addCandidates(tempPopulation);
+            p.mutatePopulation();
             
             loop++;
             System.out.print(p.getLowest() + ", ");
+            System.out.print("Time: " + (System.currentTimeMillis() - startT) / 1000.0);
         }
 
         //get the fitness for a candidate solution in problem 1 like so
