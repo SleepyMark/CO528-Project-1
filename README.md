@@ -1,11 +1,7 @@
-> ##### V2
-> - Added selection operators into the design
->    - Champion function  $champ = N/2$
->    - Random selection function  $ran = N/4$
->    - Crossover function  $cross = N/4$
->    - Mutate All function
-> - Decreased iterations from 1000 to 25
->  <u>Points:</u>
->  - After iteration 20, fitness decreases exponentially
->  - Runtime takes majorly long
->  - Fitness is 10 times smaller than V1
+> ##### V2.2.1
+> - Fixed dial[0] = 0 error
+> - Faster convergence on the fitness value
+> - Reduced iterations from 25 to 20
+>    - Iterations after 20 took too long to process
+> - Further decreased mutationFactor when reaching <50
+>    - <b>More tweaking may be needed </b>
