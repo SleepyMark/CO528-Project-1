@@ -50,7 +50,7 @@ class Example {
                 currentPopulation.remove(a);
             }
 
-            tempPopulation = p.chooseRandom(size/2, tempPopulation);
+            tempPopulation = p.chooseRandom(size/4, tempPopulation);
             newPopulation.addAll(tempPopulation);
             
             tempPopulation = p.crossOver(size/4, p.getCandidates());
