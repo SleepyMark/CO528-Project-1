@@ -1,0 +1,93 @@
+//This is my example Solution
+import java.lang.Math;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
+class Example {
+    public static void main(String[] args) {
+        //Do not delete/alter the next line
+        long startT = System.currentTimeMillis();
+
+        //Edit this according to your name and login
+        String name = "Mark Cabrera";
+        String login = "MC967";
+
+        System.out.println("These are the instructions of how to use the problem library.  Please make sure you follow the instructions carefully.");
+
+        System.out.println("For the first problem, you need to use Assess.getTest1(double[]).");
+        //An example solution consists of an array  of doubles of size 20 
+        //Allowed values are between -5 and +5 (this is not actually checked, but no point in going beyond these values)
+        //Lower fitness is better. The optimal fitness is 0 (i.e. no negative fitness values). 
+        /*int solSize = 1;
+        //generate a sample solution like so:
+
+        double[] sol1 = new double[solSize];
+        for (int j = 0; j < solSize; j++) {
+        sol1[j] = Math.random() * Math.round(5.12 * (Math.random() - Math.random()));
+        }*/
+
+        //My solution
+        int size = 20;      
+        double [] candidates = new double[size];
+        Population p = new Population();
+        p.populateAndGenerate(size);
+        
+        double num;
+        int loop=0;
+        do{
+            for(int i=0; i<5; i++){
+                System.out.print("Iteration " + loop + ": ");
+                p.resetLowest();
+                for(Candidate_Solution n : p.getCandidates()){
+                    num = Assess.getTest1(n.getValues());
+                    n.setFitness(num);
+                    //System.out.print(n.getFitness() + " ");
+                    n.mutate();
+                    p.checkIfLowest(num);
+                }
+                //System.out.println("");
+                loop++;
+                System.out.print(p.getLowest() + ", ");
+            }
+            
+        } while (loop < 1000);
+        
+        //get the fitness for a candidate solution in problem 1 like so
+        //double fit = Assess.getTest1(candidates);
+
+        
+        //System.out.println("The fitness of your example Solution is: " + fit);
+
+        System.out.println(" ");
+        System.out.println(" ");
+        System.out.println("Now let us turn to the second problem:");
+        System.out.println("A sample solution in this case is a boolean array of size 100.");
+        System.out.println("I now create a random sample solution and get the weight and utility:");
+
+
+        //Creating a sample solution for the second problem
+        //The higher the fitness, the better, but be careful of  the weight constraint!
+        boolean[] sol2 = new boolean[100];
+        for (int i = 0; i < sol2.length; i++) {
+            sol2[i] = (Math.random() > 0.5);
+        }
+
+        //Now checking the fitness of the candidate solution
+        double[] tmp = (Assess.getTest2(sol2));
+
+        //The index 0 of tmp gives the weight. Index 1 gives the utility
+        System.out.println("The weight is: " + tmp[0]);
+        System.out.println("The utility is: " + tmp[1]);
+
+        //Once completed, your code must submit the results you generated, including your name and login: 
+        //Use and adapt  the function below:
+        Assess.checkIn(name, login, candidates, sol2);
+
+        //Do not delete or alter the next line
+        long endT = System.currentTimeMillis();
+        System.out.println("Total execution time was: " + ((endT - startT) / 1000.0) + " seconds");
+
+
+    }
+
+}
