@@ -27,49 +27,58 @@ class Example {
         }*/
 
         //My solution
-        int size = 20;      
+        int size = 1000;      
         double [] candidates = new double[size];
-        Population p = new Population();
-        //p.setPopulation(p.generateBalanced(size, -5, +5));
-        p.setPopulation(p.generate(size));
-        ArrayList<Candidates> currentPopulation = (ArrayList<Candidates>)p.getCandidates().clone();
-        ArrayList<Candidates> newPopulation = new ArrayList<Candidates>();
-        ArrayList<Candidates> tempPopulation = new ArrayList<Candidates>();
+        Population p = new Population(size);
+        
+        ArrayList<Candidate_Solution> currentPopulation;
+        ArrayList<Candidate_Solution> newPopulation = new ArrayList<Candidate_Solution>();
+        ArrayList<Candidate_Solution> tempPopulation = new ArrayList<Candidate_Solution>();
         double num;
         int loop=1;
         
-        for(int i=0; i<20; i++){
+        for(int i=0; i<5000; i++){
             System.out.print("Iteration " + loop + ": ");
             p.resetLowest();
-            for(Candidates n : p.getCandidates()){
+            for(Candidate_Solution n : p.getCandidates()){
                 num = Assess.getTest1(n.getValues());
                 n.setFitness(num);
                 p.checkIfLowest(num);
+                //System.out.println(Arrays.toString(n.getValues()));
             }   
-            
-            tempPopulation = p.championRandomOperator(size/4);
+            currentPopulation = (ArrayList<Candidate_Solution>)p.getCandidates().clone();
+            newPopulation.clear();
+            tempPopulation = p.championOperator(size/4);
             newPopulation.addAll(tempPopulation);
-            for(Candidates a : tempPopulation) currentPopulation.remove(a);
+            //Winning candites gets removed from the list
+            for(Candidate_Solution a : tempPopulation) currentPopulation.remove(a);
 
-            tempPopulation = p.chooseRandom(size/4, tempPopulation);
+            tempPopulation = p.chooseRandom((size/4) , currentPopulation);
             newPopulation.addAll(tempPopulation);
             tempPopulation = p.crossOver(size/4, tempPopulation);
             newPopulation.addAll(tempPopulation);
             
             tempPopulation = p.crossOver(size/4, p.getCandidates());
-            
+            p.emptyPopulation();
             p.setPopulation(newPopulation);
             p.addCandidates(tempPopulation);
             p.mutatePopulation();
             
             
             loop++;
-            System.out.print(p.getLowest() + ", ");
+            System.out.print(p.getLowest() + ", " + "Population:" + p.getCandidates().size() + ", ");
             System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
         }
 
         //get the fitness for a candidate solution in problem 1 like so
         double fit = p.getLowest();
+
+        //System.out.println("The fitness of your example Solution is: " + fit);
+        System.out.println(" ");
+        System.out.println(" ");
+        System.out.println("Now let us turn to the second problem:");
+        System.out.println("A sample solution in this case is a boolean array of size 100.");
+        System.out.println("I now create a random sample solution and get the weight and utility:");
 
         //Creating a sample solution for the second problem
         //The higher the fitness, the better, but be careful of  the weight constraint!

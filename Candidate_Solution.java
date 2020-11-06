@@ -8,10 +8,10 @@ import java.util.Random;
  * @author Mark Cabrera (mc967)
  * @version 1.5.0
  */
-public class Candidate_Solution implements Candidates
+public class Candidate_Solution
 {
     // instance variables - replace the example below with your own
-    private List<double> dials[];
+    private double dials[];
     private double fitnessValue;
     private double prevFitness;
     private double prevDial;
@@ -24,13 +24,13 @@ public class Candidate_Solution implements Candidates
      */
     public Candidate_Solution()
     {
-           dials =  new List<double>[20];
+           dials =  new double[20];
            fitnessValue = 999;
            prevFitness = 1000;
            mutationFactor = 0;
            rd = new Random();
     }
-    public Candidates generate()
+    public Candidate_Solution generate()
     {
         for(int i=0; i<dials.length; i++){
             dials[i] = (Math.random() * 10)-5;
@@ -62,10 +62,10 @@ public class Candidate_Solution implements Candidates
         }
         //Chooses whether to add or subtract dial values
         if(operand == true){
-            dials[index] += (dials[index]/100)*(mutationFactor * Math.log10(fitnessValue));
+            dials[index] += (dials[index]/10)*(mutationFactor * Math.log(fitnessValue));
         }
         if(operand == false){
-            dials[index] -= (dials[index]/100)*(mutationFactor * Math.log10(fitnessValue));
+            dials[index] -= (dials[index]/10)*(mutationFactor * Math.log(fitnessValue));
         }
         //Checks if the dial is between the range -5 to +5
         if(dials[index]>5 || dials[index] < -5){
@@ -73,9 +73,9 @@ public class Candidate_Solution implements Candidates
         }
     }
 
-    public List<?>[] getValues()
+    public double[] getValues()
     {
-        return (E)dials;
+        return dials;
     }
     
     public void setFitness(double fit)
@@ -83,12 +83,12 @@ public class Candidate_Solution implements Candidates
         prevFitness = fitnessValue;
         fitnessValue = fit;
 
-        if(fitnessValue < 300)mutationFactor = 32;
-        if(fitnessValue < 200)mutationFactor = 16;
-        if(fitnessValue < 100)mutationFactor = 8;
-        if(fitnessValue < 50)mutationFactor = 4;
-        if(fitnessValue < 25)mutationFactor = 2;
-        if(fitnessValue < 15)mutationFactor = 1;
+        if(fitnessValue < 300)mutationFactor = 128;
+        if(fitnessValue < 200)mutationFactor = 64;
+        if(fitnessValue < 100)mutationFactor = 32;
+        if(fitnessValue < 50)mutationFactor = 16;
+        if(fitnessValue < 25)mutationFactor = 8;
+        if(fitnessValue < 15)mutationFactor = 4;
     }
    
      public double getFitness()
@@ -96,26 +96,22 @@ public class Candidate_Solution implements Candidates
         return this.fitnessValue;
     }
     
-    public void set(int index, double value)
+    protected void setDial(int index, double value)
     {
         dials[index] = value;
     }
-    public Candidates crossOver(Candidates b)
+    public Candidate_Solution crossOver(Candidate_Solution b)
     {
         Candidate_Solution newSolution = new Candidate_Solution();
         double bValues [] = b.getValues();
         for(int dial=0; dial<20; dial++){
-            if(dial%2==1) newSolution.set(dial, this.dials[dial]);
-            if(dial%2==0) newSolution.set(dial, bValues[dial]);
+            if(dial%2==1) newSolution.setDial(dial, this.dials[dial]);
+            if(dial%2==0) newSolution.setDial(dial, bValues[dial]);
         }
         
         return newSolution;
     }
     
-    public void setAll(int value)
-    {
-        for(int dial=0; dial<20; dial++) dials[dial]=value;
-    }
     public void bigMutation()
     {
         if(Math.random()*10==1){
@@ -123,7 +119,7 @@ public class Candidate_Solution implements Candidates
         }
     }
     
-    public Boolean checkSimilarity(Candidates y, int similarities, int average)
+    public Boolean checkSimilarity(Candidate_Solution y, int similarities, int average)
     {
         
         return false;
