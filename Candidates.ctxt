@@ -1,0 +1,24 @@
+#BlueJ class context
+comment0.target=Candidates
+comment0.text=\r\n\ Write\ a\ description\ of\ interface\ Candidates\ here.\r\n\r\n\ @author\ (your\ name)\r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=
+comment1.target=Candidates\ generate()
+comment10.params=y\ similarities\ average
+comment10.target=java.lang.Boolean\ checkSimilarity(Candidates,\ int,\ int)
+comment2.params=
+comment2.target=void\ mutate()
+comment3.params=
+comment3.target=java.util.List[]\ getValues()
+comment4.params=fit
+comment4.target=void\ setFitness(double)
+comment5.params=
+comment5.target=double\ getFitness()
+comment6.params=index\ value
+comment6.target=void\ set(int,\ double)
+comment7.params=b
+comment7.target=Candidates\ crossOver(Candidates)
+comment8.params=value
+comment8.target=void\ setAll(int)
+comment9.params=
+comment9.target=void\ bigMutation()
+numComments=11

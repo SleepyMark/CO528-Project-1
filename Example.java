@@ -29,26 +29,27 @@ class Example {
         //My solution
         int size = 20;      
         double [] candidates = new double[size];
-        Population p = new Population(size);
-        
-        ArrayList<Candidate_Solution> currentPopulation = (ArrayList<Candidate_Solution>)p.getCandidates().clone();
-        ArrayList<Candidate_Solution> newPopulation = new ArrayList<Candidate_Solution>();
-        ArrayList<Candidate_Solution> tempPopulation = new ArrayList<Candidate_Solution>();
+        Population p = new Population();
+        //p.setPopulation(p.generateBalanced(size, -5, +5));
+        p.setPopulation(p.generate(size));
+        ArrayList<Candidates> currentPopulation = (ArrayList<Candidates>)p.getCandidates().clone();
+        ArrayList<Candidates> newPopulation = new ArrayList<Candidates>();
+        ArrayList<Candidates> tempPopulation = new ArrayList<Candidates>();
         double num;
         int loop=1;
         
         for(int i=0; i<20; i++){
             System.out.print("Iteration " + loop + ": ");
             p.resetLowest();
-            for(Candidate_Solution n : p.getCandidates()){
+            for(Candidates n : p.getCandidates()){
                 num = Assess.getTest1(n.getValues());
                 n.setFitness(num);
                 p.checkIfLowest(num);
             }   
             
-            tempPopulation = p.championOperator(size/4);
+            tempPopulation = p.championRandomOperator(size/4);
             newPopulation.addAll(tempPopulation);
-            for(Candidate_Solution a : tempPopulation) currentPopulation.remove(a);
+            for(Candidates a : tempPopulation) currentPopulation.remove(a);
 
             tempPopulation = p.chooseRandom(size/4, tempPopulation);
             newPopulation.addAll(tempPopulation);
@@ -69,13 +70,6 @@ class Example {
 
         //get the fitness for a candidate solution in problem 1 like so
         double fit = p.getLowest();
-
-        //System.out.println("The fitness of your example Solution is: " + fit);
-        System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("Now let us turn to the second problem:");
-        System.out.println("A sample solution in this case is a boolean array of size 100.");
-        System.out.println("I now create a random sample solution and get the weight and utility:");
 
         //Creating a sample solution for the second problem
         //The higher the fitness, the better, but be careful of  the weight constraint!

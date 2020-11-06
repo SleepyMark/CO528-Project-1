@@ -3,37 +3,36 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Random;
 /**
- * Write a description of class Candidate_Solution here.
+ * Write a description of class Baggage_Solution here.
  *
- * @author Mark Cabrera (mc967)
- * @version 1.5.0
+ * @author (your name)
+ * @version (a version number or a date)
  */
-public class Candidate_Solution implements Candidates
+public class Baggage_Solution implements Candidates
 {
     // instance variables - replace the example below with your own
-    private List<double> dials[];
+    private Boolean dials[];
     private double fitnessValue;
     private double prevFitness;
-    private double prevDial;
+    private Boolean prevDial;
     private int prevIndex;
     //Used when: fitness high(bad) = high mutation && fitness low(good) = low mutation
     private double mutationFactor;
     private Random rd;
+
     /**
-     * Constructor for objects of class Candidate_Solution
+     * Constructor for objects of class Baggage_Solution
      */
-    public Candidate_Solution()
+    public Baggage_Solution()
     {
-           dials =  new List<double>[20];
-           fitnessValue = 999;
-           prevFitness = 1000;
-           mutationFactor = 0;
-           rd = new Random();
+        dials = new Boolean[100];
     }
+
+    
     public Candidates generate()
     {
         for(int i=0; i<dials.length; i++){
-            dials[i] = (Math.random() * 10)-5;
+            dials[i] = rd.nextBoolean();
         }
         prevIndex = 0;
         prevDial = dials[prevIndex];
@@ -60,22 +59,14 @@ public class Candidate_Solution implements Candidates
             index = prevIndex;
             prevIndex = index;
         }
-        //Chooses whether to add or subtract dial values
-        if(operand == true){
-            dials[index] += (dials[index]/100)*(mutationFactor * Math.log10(fitnessValue));
-        }
-        if(operand == false){
-            dials[index] -= (dials[index]/100)*(mutationFactor * Math.log10(fitnessValue));
-        }
-        //Checks if the dial is between the range -5 to +5
-        if(dials[index]>5 || dials[index] < -5){
-            dials[index] = (int)(Math.random() * 10) -5;
-        }
+        
+        //Chooses whether to set dial value to true or false
+        dials[index] = operand;
     }
 
-    public List<?>[] getValues()
+    public Object[] getValues()
     {
-        return (E)dials;
+        return dials;
     }
     
     public void setFitness(double fit)
