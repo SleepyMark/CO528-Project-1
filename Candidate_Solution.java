@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Random;
 /**
  * Write a description of class Candidate_Solution here.
  *
@@ -17,32 +18,37 @@ public class Candidate_Solution
     private int prevIndex;
     //Used when: fitness high(bad) = high mutation && fitness low(good) = low mutation
     private double mutationFactor;
+    private Random rd;
     /**
      * Constructor for objects of class Candidate_Solution
      */
     public Candidate_Solution()
     {
            dials =  new double[20];
-           fitnessValue = 99;
+           fitnessValue = 999;
            prevFitness = 1000;
            mutationFactor = 0;
+           rd = new Random();
     }
-    public void generate()
+    public Candidate_Solution generate()
     {
         for(int i=0; i<dials.length; i++){
             dials[i] = (Math.random() * 10)-5;
         }
-        prevDial = dials[0];
+        prevIndex = 0;
+        prevDial = dials[prevIndex];
+        
         //System.out.println(Arrays.toString(dials));
+        return this;
     }
     public void mutate()
     {
         double offset[] = new double[20];
         int index = (int)(Math.random() * 20);
-        int operand = (int)(Math.random() * 2);
+        boolean operand = rd.nextBoolean();
+        int value = 30;
         
-        
-        if(fitnessValue > prevFitness){
+        if(fitnessValue < prevFitness){
             //If the fitness has moved away from convergence, then it will revert back to previous values
             dials[prevIndex] = prevDial;
         }
@@ -50,20 +56,20 @@ public class Candidate_Solution
         prevIndex = index;
         prevDial = dials[index];
         //If there is positive change, the mutation will still alter the previous dials value
-        if(fitnessValue < prevFitness){
+        if(fitnessValue > prevFitness){
             index = prevIndex;
             prevIndex = index;
         }
         //Chooses whether to add or subtract dial values
-        if(operand == 1){
-            dials[index] += (dials[index]/100)*((Math.random() * 10)*mutationFactor);
+        if(operand == true){
+            dials[index] += (dials[index]/100)*(mutationFactor * Math.log10(fitnessValue));
         }
-        if(operand == 0){
-            dials[index] -= (dials[index]/100)*(10*mutationFactor);
+        if(operand == false){
+            dials[index] -= (dials[index]/100)*(mutationFactor * Math.log10(fitnessValue));
         }
         //Checks if the dial is between the range -5 to +5
         if(dials[index]>5 || dials[index] < -5){
-            dials[index] = (Math.random() * 10)-5;
+            dials[index] = (int)(Math.random() * 10) -5;
         }
     }
 
@@ -76,45 +82,13 @@ public class Candidate_Solution
     {
         prevFitness = fitnessValue;
         fitnessValue = fit;
-        if(fitnessValue < 1000){
-            mutationFactor = 1;
-        }
-        if(fitnessValue < 900){
-            mutationFactor = 0.9;
-        }
-        if(fitnessValue < 800){
-            mutationFactor = 0.8;
-        }
-        if(fitnessValue < 700){
-            mutationFactor = 0.7;
-        }
-        if(fitnessValue < 600){
-            mutationFactor = 0.6;
-        }
-        if(fitnessValue < 500){
-            mutationFactor = 0.5;
-        }
-        if(fitnessValue < 400){
-            mutationFactor = 0.4;
-        }
-        if(fitnessValue < 300){
-            mutationFactor = 0.3;
-        }
-        if(fitnessValue < 200){
-            mutationFactor = 0.2;
-        }
-        if(fitnessValue < 100){
-            mutationFactor = 0.1;
-        }
-        if(fitnessValue < 50){
-            mutationFactor = 0.05;
-        }
-        if(fitnessValue < 25){
-            mutationFactor = 0.025;
-        }
-        if(fitnessValue < 15){
-            mutationFactor = 0.01;
-        }
+
+        if(fitnessValue < 300)mutationFactor = 32;
+        if(fitnessValue < 200)mutationFactor = 16;
+        if(fitnessValue < 100)mutationFactor = 8;
+        if(fitnessValue < 50)mutationFactor = 4;
+        if(fitnessValue < 25)mutationFactor = 2;
+        if(fitnessValue < 15)mutationFactor = 1;
     }
    
      public double getFitness()
@@ -130,13 +104,24 @@ public class Candidate_Solution
     {
         Candidate_Solution newSolution = new Candidate_Solution();
         double bValues [] = b.getValues();
-        for(int dial=0; dial<19; dial++){
-            //if(dial<=9) newSolution.setDial(dial, dials[dial]);
-            //if(dial>=10) newSolution.setDial(dial, bValues[dial]);
-            if(dial%2==0) newSolution.setDial(dial, dials[dial]);
-            if(dial%2==1) newSolution.setDial(dial, bValues[dial]);
+        for(int dial=0; dial<20; dial++){
+            if(dial%2==1) newSolution.setDial(dial, this.dials[dial]);
+            if(dial%2==0) newSolution.setDial(dial, bValues[dial]);
         }
         
         return newSolution;
+    }
+    
+    public void bigMutation()
+    {
+        if(Math.random()*10==1){
+            mutationFactor = 4;
+        }
+    }
+    
+    public Boolean checkSimilarity(Candidate_Solution y, int similarities, int average)
+    {
+        
+        return false;
     }
 }
