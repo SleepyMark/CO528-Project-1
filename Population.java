@@ -16,7 +16,7 @@ public class Population
      */
     public Population(int size)
     {
-        lowest = 99999;
+        lowest = 999;
         population = new ArrayList<Candidate_Solution>(size);
         Candidate_Solution a;
         for(int i=0; i<size-1; i++){
@@ -34,7 +34,7 @@ public class Population
     
     public void resetLowest()
     {
-        lowest = 99999;
+        lowest = 999;
     }
     
     public Boolean checkIfLowest(double x)
@@ -115,6 +115,34 @@ public class Population
         return out;
     }
     
+    public ArrayList<Candidate_Solution> randomChoiceOperator(int returnSize)
+    {
+        ArrayList<Candidate_Solution> temp = (ArrayList<Candidate_Solution>)population.clone();
+        ArrayList<Candidate_Solution> temp2;
+        ArrayList<Candidate_Solution> out = new ArrayList<Candidate_Solution>();
+        int num;
+        
+        for(int i=0; i<returnSize-1; i++){
+            while(temp.size()!=1){
+                temp2 = (ArrayList<Candidate_Solution>)temp.clone();
+                
+                for(int loop=1; i<temp2.size()/2; i++){
+                    num = (int)(Math.random()*2);
+                    if(num==0){
+                        temp.remove(loop-1);
+                    }
+                    if(num==1){
+                        temp.remove(loop);
+                    }
+                }
+                out.add(temp2.get(0));
+                temp.remove(temp2.get(0));
+            }
+        }
+        
+        return out;
+    }
+    
     public ArrayList<Candidate_Solution> chooseRandom(int size, ArrayList<Candidate_Solution> choices)
     {
         ArrayList<Candidate_Solution> out = new ArrayList<Candidate_Solution>();
@@ -139,6 +167,12 @@ public class Population
     public void addCandidates(ArrayList<Candidate_Solution> newCandidates)
     {
         population.addAll(newCandidates);
+        for(Candidate_Solution a : newCandidates){
+            if(a.getFitness() < this.lowest){
+            lowest = a.getFitness();
+        }
+        }
+        
     }
     public void mutatePopulation()
     {
@@ -146,7 +180,6 @@ public class Population
             a.mutate();
         }
     }
-    
     public void setPopulation(ArrayList<Candidate_Solution> newPopulation)
     {
         population = newPopulation;
