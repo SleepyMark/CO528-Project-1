@@ -19,11 +19,8 @@ public class Population
         lowest = 999;
         population = new ArrayList<Candidate_Solution>(size);
         Candidate_Solution a;
-        for(int i=0; i<size; i++){
-            a = new Candidate_Solution();
-            a.generate();
-            population.add(a);
-        }
+        for(int i=0; i<size; i++) population.add(new Candidate_Solution().generate());
+
     }
 
     public ArrayList<Candidate_Solution> getCandidates()
@@ -174,7 +171,10 @@ public class Population
 
     public void mutatePopulation()
     {
-        for(Candidate_Solution a : population) a.mutate();
+        for(Candidate_Solution a : population){
+            a.mutate();
+            a.bigMutation();
+        }
     }
 
     public void setPopulation(ArrayList<Candidate_Solution> newPopulation)
@@ -189,5 +189,14 @@ public class Population
             out.add(choices.get((int)(Math.random() * choices.size())).crossOver(choices.get((int)(Math.random() * choices.size()))));
         }
         return out;
+    }
+    
+    public void checkIfZero(ArrayList<Candidate_Solution> in)
+    {
+        for(Candidate_Solution a: in){
+            if(a.checkIfZero()){      
+                System.out.print("Zero!");
+            }
+        }
     }
 }
