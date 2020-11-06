@@ -3,3 +3,4 @@
 
 > - Build a generateBalanced() algorithm, where candidate solutions inputs are evenly distributed, across the input landscape
 > - Create more diversity in the population, to stop premature convergence
+> - Create a more generalised population class, to include problem 2
