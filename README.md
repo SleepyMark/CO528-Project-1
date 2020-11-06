@@ -14,4 +14,4 @@
 >   1. champion = n/4
 >   2. chooseRandom = n/4-champions
 >   3. crossoverLosers = n/4-champions
->   4. 3. crosoverPrevPopulation = n/4
+>   4. crosoverPrevPopulation = n/4
