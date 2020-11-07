@@ -27,7 +27,7 @@ class Example {
         }*/
 
         //My solution
-        int size = 500;      
+        int size = 400;      
         double [] candidates = new double[size];
         Population p = new Population(size);
         
@@ -38,7 +38,7 @@ class Example {
         double num;
         int loop=1;
         
-        for(int i=0; i<5000; i++){
+        while(true){
             
             p.resetLowest();
             for(Candidate_Solution n : p.getCandidates()){
@@ -56,19 +56,22 @@ class Example {
             newPopulation.addAll(tempPopulation);
             //Winning candites gets removed from the list
             for(Candidate_Solution a : tempPopulation) currentPopulation.remove(a);
-
-            tempPopulation = p.chooseRandom((size/4) , currentPopulation);
+            
+            tempPopulation = p.crossOver(size/4, tempPopulation);
             newPopulation.addAll(tempPopulation);
             
-            
-            /*tempPopulation = p.crossOver(size/4, tempPopulation);
+            /*tempPopulation = p.chooseRandom((size/4) , currentPopulation);
             newPopulation.addAll(tempPopulation);*/
+            
+            
+            
+            
             tempPopulation.clear();
-            for(int newCan=0; newCan<size/4; newCan++) tempPopulation.add(new Candidate_Solution().generate());
+            for(int newCan=0; newCan<size/2; newCan++) tempPopulation.add(new Candidate_Solution().generate());
             newPopulation.addAll(tempPopulation);
             
-            tempPopulation = p.crossOver(size/4, p.getCandidates());
-            newPopulation.addAll(tempPopulation);
+            /*tempPopulation = p.crossOver(size/4, p.getCandidates());
+            newPopulation.addAll(tempPopulation);*/
             p.emptyPopulation();
             p.setPopulation(newPopulation);
             p.mutatePopulation();
@@ -81,6 +84,9 @@ class Example {
                 System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
             }
             loop++;
+            if(p.getLowest()<0.000001){
+                break;
+            }
             //System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
         }
 
