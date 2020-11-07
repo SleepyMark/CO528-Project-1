@@ -16,27 +16,23 @@ public class Population
      */
     public Population(int size)
     {
-        lowest = 0;
+        lowest = 999;
         population = new ArrayList<Candidate_Solution>(size);
         Candidate_Solution a;
-        for(int i=0; i<size-1; i++){
-            a = new Candidate_Solution();
-            a.generate();
-            population.add(a);
-        }
+        for(int i=0; i<size; i++) population.add(new Candidate_Solution().generate());
+
     }
 
-    
     public ArrayList<Candidate_Solution> getCandidates()
     {
         return this.population;
     }
-    
+
     public void resetLowest()
     {
-        lowest = 99999;
+        lowest = 999;
     }
-    
+
     public Boolean checkIfLowest(double x)
     {
         if(x < lowest){
@@ -45,12 +41,12 @@ public class Population
         }
         return false;
     }
-    
+
     public double getLowest()
     {
         return this.lowest;
     }
-    
+
     public double getTotalFitness()
     {
         double total=0;
@@ -59,7 +55,7 @@ public class Population
         }
         return total;
     }
-    
+
     private double getTotalFitness(ArrayList<Candidate_Solution> candidateArray)
     {
         double total=0;
@@ -68,6 +64,7 @@ public class Population
         }
         return total;
     }
+
     public double[] getBestFit()
     {
         double num = 9999;
@@ -89,21 +86,47 @@ public class Population
      */
     public ArrayList<Candidate_Solution> championOperator(int returnSize)
     {
+        ArrayList<Candidate_Solution> A = (ArrayList<Candidate_Solution>)population.clone();
+        ArrayList<Candidate_Solution> B = A;
+        ArrayList<Candidate_Solution> out = new ArrayList<Candidate_Solution>();
+
+        Candidate_Solution a;
+        Candidate_Solution b;
+        for(int i=0; i<returnSize; i++){
+            B = (ArrayList<Candidate_Solution>)A.clone();
+            while(B.size()!=1){
+                for(int loop=1; loop<=B.size()-1; loop++){
+                    if(B.get(loop).getFitness() > B.get(loop-1).getFitness()){
+                        B.remove(loop);
+                    } else {
+                        B.remove(loop-1);
+                    }
+                }
+            }
+            out.add(B.get(0));
+            A.remove(B.get(0));
+        }
+
+        return out;
+    }
+
+    public ArrayList<Candidate_Solution> randomChoiceOperator(int returnSize)
+    {
         ArrayList<Candidate_Solution> temp = (ArrayList<Candidate_Solution>)population.clone();
         ArrayList<Candidate_Solution> temp2;
         ArrayList<Candidate_Solution> out = new ArrayList<Candidate_Solution>();
-        
-        Candidate_Solution a;
-        Candidate_Solution b;
-        for(int i=0; i<returnSize-1; i++){
+        int num;
+
+        for(int i=0; i<returnSize; i++){
             while(temp.size()!=1){
                 temp2 = (ArrayList<Candidate_Solution>)temp.clone();
-                
+
                 for(int loop=1; i<temp2.size()/2; i++){
-                    if(temp2.get(loop).getFitness() > temp2.get(loop-1).getFitness()){
+                    num = (int)(Math.random()*2);
+                    if(num==0){
                         temp.remove(loop-1);
                     }
-                    if(temp2.get(loop).getFitness() < temp2.get(loop-1).getFitness()){
+                    if(num==1){
                         temp.remove(loop);
                     }
                 }
@@ -111,23 +134,22 @@ public class Population
                 temp.remove(temp2.get(0));
             }
         }
-        
+
         return out;
     }
-    
-    public ArrayList<Candidate_Solution> chooseRandom(int size, ArrayList<Candidate_Solution> choices)
+
+    public ArrayList<Candidate_Solution> chooseRandom(int returnSize, ArrayList<Candidate_Solution> choices)
     {
         ArrayList<Candidate_Solution> out = new ArrayList<Candidate_Solution>();
-        for(int loop=0; loop<size-1; loop++){
-            out.add(choices.get((int)(Math.random() * choices.size())));
-        }
+        for(int loop=0; loop<returnSize; loop++) out.add(choices.get((int)(Math.random() * choices.size())));
         return out;
     }
+
     public void emptyPopulation()
     {
-        population = null;
+        population.clear();
     }
-    
+
     public void addCandidate(Candidate_Solution a)
     {
         population.add(a);
@@ -135,29 +157,46 @@ public class Population
             lowest = a.getFitness();
         }
     }
-    
+
     public void addCandidates(ArrayList<Candidate_Solution> newCandidates)
     {
-        population.addAll(newCandidates);
+        for(Candidate_Solution a : newCandidates){
+            population.add(a);
+            if(a.getFitness() < this.lowest){
+                lowest = a.getFitness();
+            }
+        }
+
     }
+
     public void mutatePopulation()
     {
         for(Candidate_Solution a : population){
             a.mutate();
+            a.bigMutation();
         }
     }
-    
+
     public void setPopulation(ArrayList<Candidate_Solution> newPopulation)
     {
-        population = newPopulation;
+        population.addAll(newPopulation);
     }
-    
+
     public ArrayList<Candidate_Solution> crossOver(int size, ArrayList<Candidate_Solution> choices)
     {
         ArrayList<Candidate_Solution> out = new ArrayList<Candidate_Solution>();
-        for(int loop=0; loop<size-1; loop++){
+        for(int loop=0; loop<size; loop++){
             out.add(choices.get((int)(Math.random() * choices.size())).crossOver(choices.get((int)(Math.random() * choices.size()))));
         }
         return out;
+    }
+    
+    public void checkIfZero(ArrayList<Candidate_Solution> in)
+    {
+        for(Candidate_Solution a: in){
+            if(a.checkIfZero()){      
+                System.out.print("Zero!");
+            }
+        }
     }
 }
