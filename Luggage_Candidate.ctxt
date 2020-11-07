@@ -1,0 +1,26 @@
+#BlueJ class context
+comment0.target=Luggage_Candidate
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Luggage_Candidates\ here.\r\n\r\n\ @author\ (your\ name)\r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=
+comment1.target=Luggage_Candidate()
+comment10.params=b
+comment10.target=Luggage_Candidate\ crossOver(Luggage_Candidate)
+comment11.params=
+comment11.target=void\ bigMutation()
+comment2.params=
+comment2.target=Luggage_Candidate\ generate()
+comment3.params=
+comment3.target=void\ mutate()
+comment4.params=
+comment4.target=boolean[]\ getValues()
+comment5.params=fit
+comment5.target=void\ setFitness(double)
+comment6.params=
+comment6.target=double\ getFitness()
+comment7.params=weight
+comment7.target=void\ setWeight(double)
+comment8.params=
+comment8.target=double\ getWeight()
+comment9.params=index\ value
+comment9.target=void\ setDial(int,\ boolean)
+numComments=12

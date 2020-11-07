@@ -27,47 +27,58 @@ class Example {
         }*/
 
         //My solution
-        int size = 1000;      
+        int size = 10;      
         double [] candidates = new double[size];
         Population p = new Population(size);
-        
+
         ArrayList<Candidate_Solution> currentPopulation;
         ArrayList<Candidate_Solution> newPopulation = new ArrayList<Candidate_Solution>();
         ArrayList<Candidate_Solution> tempPopulation = new ArrayList<Candidate_Solution>();
+        Candidate_Solution A;
         double num;
         int loop=1;
-        
-        for(int i=0; i<5000; i++){
-            System.out.print("Iteration " + loop + ": ");
+
+        while(true){
+
             p.resetLowest();
             for(Candidate_Solution n : p.getCandidates()){
+                //System.out.println("Before: " + Arrays.toString(n.getValues()));
                 num = Assess.getTest1(n.getValues());
                 n.setFitness(num);
                 p.checkIfLowest(num);
-                //System.out.println(Arrays.toString(n.getValues()));
+                //System.out.println("After: " + Arrays.toString(n.getValues()));
             }   
             currentPopulation = (ArrayList<Candidate_Solution>)p.getCandidates().clone();
             newPopulation.clear();
+
             tempPopulation = p.championOperator(size/4);
             newPopulation.addAll(tempPopulation);
             //Winning candites gets removed from the list
             for(Candidate_Solution a : tempPopulation) currentPopulation.remove(a);
 
-            tempPopulation = p.chooseRandom((size/4) , currentPopulation);
-            newPopulation.addAll(tempPopulation);
             tempPopulation = p.crossOver(size/4, tempPopulation);
             newPopulation.addAll(tempPopulation);
-            
+            tempPopulation.clear();
+            for(int newCan=0; newCan<size/4; newCan++) tempPopulation.add(new Candidate_Solution().generate());
+            newPopulation.addAll(tempPopulation);
+
             tempPopulation = p.crossOver(size/4, p.getCandidates());
+            newPopulation.addAll(tempPopulation);
             p.emptyPopulation();
             p.setPopulation(newPopulation);
-            p.addCandidates(tempPopulation);
             p.mutatePopulation();
+
             
-            
+            if(loop%10000==0){
+                System.out.print("Iteration " + loop + ": ");
+                System.out.print(p.getLowest() + ", " + "Population:" + p.getCandidates().size() + ", ");
+                System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
+            }
             loop++;
-            System.out.print(p.getLowest() + ", " + "Population:" + p.getCandidates().size() + ", ");
-            System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
+            if(p.getLowest()<1E-5){
+                break;
+            }
+            //System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
         }
 
         //get the fitness for a candidate solution in problem 1 like so
@@ -82,13 +93,68 @@ class Example {
 
         //Creating a sample solution for the second problem
         //The higher the fitness, the better, but be careful of  the weight constraint!
-        boolean[] sol2 = new boolean[100];
-        for (int i = 0; i < sol2.length; i++) {
-            sol2[i] = (Math.random() > 0.5);
+        int itemsSize = 6;      
+        Luggage_Population l = new Luggage_Population(itemsSize);
+
+        ArrayList<Luggage_Candidate> currentItems;
+        ArrayList<Luggage_Candidate> newItems = new ArrayList<Luggage_Candidate>();
+        ArrayList<Luggage_Candidate> tempItems = new ArrayList<Luggage_Candidate>();
+        loop=1;
+        
+        double stuff[];
+
+        while(true){
+
+            l.resetHighest();
+            for(Luggage_Candidate i : l.getCandidates()){
+                // stuff[0] 0 fitness, stuff[1] = weight
+                stuff = Assess.getTest2(i.getValues());
+                i.setWeight(stuff[0]);
+                i.setFitness(stuff[1]);
+                
+                l.checkIfHighest(stuff[1]);
+                
+                System.out.println(i.getWeight());
+            }   
+            /////////////////////////////////////////////
+            currentItems = (ArrayList<Luggage_Candidate>)l.getCandidates().clone();
+            newItems.clear();
+            /////////////////////////////////////////////
+            tempItems = l.championOperator(size/4);
+            newItems.addAll(tempItems);
+            //Winning candites gets removed from the list
+            for(Luggage_Candidate a : tempItems) currentItems.remove(a);
+            /////////////////////////////////////////////
+            tempItems = l.crossOver(size/4, tempItems);
+            newItems.addAll(tempItems);
+            tempItems.clear();
+            /////////////////////////////////////////////
+            for(int newLug=0; newLug<size/4; newLug++) tempItems.add(new Luggage_Candidate().generate());
+            newItems.addAll(tempItems);
+            /////////////////////////////////////////////
+            tempItems = l.crossOver(size/4, l.getCandidates());
+            newItems.addAll(tempItems);
+            /////////////////////////////////////////////
+            
+            l.emptyPopulation();
+            l.setPopulation(newItems);
+            l.mutatePopulation();
+
+            
+            if(loop%1==0){
+                System.out.print("Iteration " + loop + ": ");
+                System.out.print(l.getHighest()+ ", Weight: " + l.getBestCandidate().getWeight()  + ", " + "No. of Items: " + l.getCandidates().size() + ", ");
+                System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
+            }
+            loop++;
+            if(loop == 10){
+                break;
+            }
+            //System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
         }
 
         //Now checking the fitness of the candidate solution
-        double[] tmp = (Assess.getTest2(sol2));
+        double[] tmp = (Assess.getTest2(l.getBestFit()));
 
         //The index 0 of tmp gives the weight. Index 1 gives the utility
         System.out.println("The weight is: " + tmp[0]);
@@ -96,7 +162,7 @@ class Example {
 
         //Once completed, your code must submit the results you generated, including your name and login: 
         //Use and adapt  the function below:
-        Assess.checkIn(name, login, p.getBestFit(), sol2);
+        Assess.checkIn(name, login, p.getBestFit(), l.getBestFit());
 
         //Do not delete or alter the next line
         long endT = System.currentTimeMillis();
