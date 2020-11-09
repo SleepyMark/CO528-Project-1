@@ -16,8 +16,6 @@ public class Candidate_Solution
     private double prevFitness;
     private double prevDial;
     private int prevIndex;
-    //Used when: fitness high(bad) = high mutation && fitness low(good) = low mutation
-    private float mutationFactor;
     private Random rd;
     /**
      * Constructor for objects of class Candidate_Solution
@@ -27,7 +25,6 @@ public class Candidate_Solution
            dials =  new double[20];
            fitnessValue = 999;
            prevFitness = 1000;
-           mutationFactor = 5;
            prevDial = 1;
            rd = new Random();
     }
@@ -58,6 +55,7 @@ public class Candidate_Solution
             prevIndex = index;
         }
         //Chooses whether to add or subtract dial values
+        //Used when: fitness high(bad) = high mutation && fitness low(good) = low mutation
         if(operand == true) dials[index] += (dials[index]/(100/Math.log(fitnessValue)))*((fitnessValue/(Math.random() * 1000)) * Math.log(fitnessValue*prevFitness));
         if(operand == false) dials[index] -= (dials[index]/(100/Math.log(fitnessValue)))*((fitnessValue/(Math.random() * 1000)) * Math.log(fitnessValue*prevFitness));
         

@@ -11,13 +11,12 @@ public class Luggage_Population
 {
     private ArrayList <Luggage_Candidate> items;
     private double highest;
-    private int x;
 
     public Luggage_Population(int size)
     {
         highest = 0;
-        items = new ArrayList<Luggage_Candidate>(size);
-        for(int i=0; i<size; i++) items.add(new Luggage_Candidate().generate());
+        items = new ArrayList<Luggage_Candidate>();
+        for(int i=0; i<size; i++) items.add(new Luggage_Candidate());
     }
 
     public ArrayList<Luggage_Candidate> getCandidates()
@@ -27,7 +26,7 @@ public class Luggage_Population
 
     public void resetHighest()
     {
-        highest = 0;
+        this.highest = 0;
     }
 
     public boolean checkIfHighest(double x)
@@ -80,7 +79,7 @@ public class Luggage_Population
         double num = 0;
         Luggage_Candidate out = null;
         for(Luggage_Candidate l : items){
-            if(l.getFitness() > num){
+            if(l.getFitness() > num && l.getWeight() < 500){
                 num = l.getFitness();
                 out = l;
             }
@@ -187,6 +186,17 @@ public class Luggage_Population
     public void setPopulation(ArrayList<Luggage_Candidate> newPopulation)
     {
         items.addAll(newPopulation);
+    }
+    
+    public int killOff()
+    {
+        int initialSize = items.size();
+        ArrayList <Luggage_Candidate> toRemove =  new ArrayList<Luggage_Candidate>();
+        for(Luggage_Candidate b : items)if(b.getWeight() > 550)toRemove.add(b);
+        for(Luggage_Candidate a : items) if(a.getWeight() > 500)a.revert(); 
+        for(Luggage_Candidate c : toRemove) items.remove(c);
+     
+        return initialSize - items.size();
     }
 
     public ArrayList<Luggage_Candidate> crossOver(int size, ArrayList<Luggage_Candidate> choices)

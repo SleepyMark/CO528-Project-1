@@ -17,7 +17,7 @@ public class Population
     public Population(int size)
     {
         lowest = 999;
-        population = new ArrayList<Candidate_Solution>(size);
+        population = new ArrayList<Candidate_Solution>();
         Candidate_Solution a;
         for(int i=0; i<size; i++) population.add(new Candidate_Solution().generate());
 
