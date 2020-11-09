@@ -17,7 +17,7 @@ public class Population
     public Population(int size)
     {
         lowest = 999;
-        population = new ArrayList<Candidate_Solution>();
+        population = new ArrayList<Candidate_Solution>(size);
         Candidate_Solution a;
         for(int i=0; i<size; i++) population.add(new Candidate_Solution().generate());
 
@@ -173,6 +173,7 @@ public class Population
     {
         for(Candidate_Solution a : population){
             a.mutate();
+            a.bigMutation();
         }
     }
 
