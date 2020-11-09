@@ -1,6 +1,8 @@
-<h2><u>Plans</u></h2>
+<h3> Plans for further development</h3>
 </br>
 
-> - Build a generateBalanced() algorithm, where candidate solutions inputs are evenly distributed, across the input landscape
-> - Create more diversity in the population, to stop premature convergence
-> - Create a more generalised population class, to include problem 2
+<h4><u>Ideas:</u><h4>
+  
+- Build a automatically balancing mutationFactor, using current & previous fitnessValue
+- Create more variety in the candiates, to explore the fitness landscape more
+- Maybe group similar solutions by creating a crossover of the two, to make room for a new solution
