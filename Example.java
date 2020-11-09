@@ -27,7 +27,7 @@ class Example {
         }*/
 
         //My solution
-        int size = 20;      
+        int size = 30;      
         double [] candidates = new double[size];
         Population p = new Population(size);
         
@@ -48,6 +48,11 @@ class Example {
                 p.checkIfLowest(num);
                 //System.out.println("After: " + Arrays.toString(n.getValues()));
             }   
+            
+            if(p.getBestCandidate().getFitness()<1E-12){
+                break;
+            }
+            
             currentPopulation = (ArrayList<Candidate_Solution>)p.getCandidates().clone();
             newPopulation.clear();
             
@@ -71,15 +76,13 @@ class Example {
             
             
             
-            if(loop%1000==0){
+            if(loop%10000==0){
                 System.out.print("Iteration " + loop + ": ");
-                System.out.print(p.getLowest() + ", " + "Population:" + p.getCandidates().size() + ", ");
+                System.out.print(p.getBestCandidate().getFitness() + ", " + "Population:" + p.getCandidates().size() + ", ");
                 System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
             }
             loop++;
-            if(p.getLowest()<9E-10){
-                break;
-            }
+            
             //System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
         }
 
@@ -93,7 +96,7 @@ class Example {
         ArrayList<Luggage_Candidate> newItems = new ArrayList<Luggage_Candidate>();
         ArrayList<Luggage_Candidate> tempItems = new ArrayList<Luggage_Candidate>();
         loop=1;
-        Luggage_Candidate b;
+        Luggage_Candidate b = null;
         double stuff[] =  new double[2];
         int newCan;
 
@@ -107,6 +110,8 @@ class Example {
         }   
         newCan = l.killOff();
         while(true){
+            
+            
             l.resetHighest();
             /////////////////////////////////////////////
             currentItems = (ArrayList<Luggage_Candidate>)l.getCandidates().clone();
@@ -124,10 +129,10 @@ class Example {
             for(int newLug=0; newLug<newCan; newLug++) tempItems.add(new Luggage_Candidate());
             newItems.addAll(tempItems);
             /////////////////////////////////////////////
-            if(loop%10000==0){
+            if(loop%100==0){
                 b = l.getBestCandidate();
                 System.out.print("Iteration " + loop + ": ");
-                System.out.print(b.getFitness()+ ", Weight: " + b.getWeight()  + ", " + "No. of Items: " + (l.getCandidates().size()+newCan) + ", ");
+                System.out.print(b.getFitness()+ ", Weight: " + b.getWeight()  + ", " + "No. of Items: " + (l.getCandidates().size()) + ", ");
                 System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
             }
             
@@ -135,6 +140,7 @@ class Example {
             l.setPopulation(newItems);
             l.mutatePopulation();
 
+            
             for(Luggage_Candidate i : l.getCandidates()){
                 stuff = Assess.getTest2(i.getValues());
 
@@ -145,14 +151,15 @@ class Example {
             newCan = l.killOff();
 
             loop++;
-            if(loop == 100000){
+            b = l.getBestCandidate();
+            if(b.getFitness() > 205){
                 break;
             }
             //System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
         }
 
         //Now checking the fitness of the candidate solution
-        double[] tmp = (Assess.getTest2(l.getBestFit()));
+        double[] tmp = (Assess.getTest2(l.getBestCandidate().getValues()));
 
         //The index 0 of tmp gives the weight. Index 1 gives the utility
         System.out.println("The weight is: " + tmp[0]);
@@ -160,7 +167,7 @@ class Example {
 
         //Once completed, your code must submit the results you generated, including your name and login: 
         //Use and adapt  the function below:
-        Assess.checkIn(name, login, p.getBestFit(), l.getBestFit());
+        Assess.checkIn(name, login, p.getBestCandidate().getValues(),l.getBestCandidate().getValues());
 
         //Do not delete or alter the next line
         long endT = System.currentTimeMillis();

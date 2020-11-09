@@ -73,15 +73,17 @@ public class Luggage_Population
         }
         return out.getValues();
     }
-    
+
     public Luggage_Candidate getBestCandidate()
     {
         double num = 0;
         Luggage_Candidate out = null;
         for(Luggage_Candidate l : items){
-            if(l.getFitness() > num && l.getWeight() < 500){
-                num = l.getFitness();
-                out = l;
+            if(l.getWeight() < 500){
+                if(l.getFitness() > num){
+                    num = l.getFitness();
+                    out = l;
+                }
             }
         }
         return out;
@@ -187,7 +189,7 @@ public class Luggage_Population
     {
         items.addAll(newPopulation);
     }
-    
+
     public int killOff()
     {
         int initialSize = items.size();
@@ -195,7 +197,7 @@ public class Luggage_Population
         for(Luggage_Candidate b : items)if(b.getWeight() > 550)toRemove.add(b);
         for(Luggage_Candidate a : items) if(a.getWeight() > 500)a.revert(); 
         for(Luggage_Candidate c : toRemove) items.remove(c);
-     
+
         return initialSize - items.size();
     }
 

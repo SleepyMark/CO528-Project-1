@@ -64,10 +64,10 @@ public class Candidate_Solution
         }
         //Chooses whether to add or subtract dial values
         if(operand == true){
-            dials[index] += (dials[index]/(100/Math.log(fitnessValue)))*((fitnessValue/(Math.random() * 100)) * Math.log(fitnessValue*prevFitness));
+            dials[index] += (dials[index]/(100/Math.abs( Math.log(fitnessValue)/Math.log(2) )+( 2/Math.log10(fitnessValue) )))*((fitnessValue/(Math.random() * 100)) * Math.abs(Math.log(fitnessValue*prevFitness)));
         }
         if(operand == false){
-            dials[index] -= (dials[index]/(100/Math.log(fitnessValue)))*((fitnessValue/(Math.random() * 100)) * Math.log(fitnessValue*prevFitness));
+            dials[index] -= (dials[index]/(100/Math.abs( Math.log(fitnessValue)/Math.log(2) )+( 2/Math.log10(fitnessValue) )))*((fitnessValue/(Math.random() * 100)) * Math.abs(Math.log(fitnessValue*prevFitness)));
         }
         //Checks if the dial is between the range -5 to +5
         if(Math.abs(dials[index]) > 5){

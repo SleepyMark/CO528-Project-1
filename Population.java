@@ -46,6 +46,18 @@ public class Population
     {
         return this.lowest;
     }
+    public Candidate_Solution getBestCandidate()
+    {
+        double num = 9999;
+        Candidate_Solution out = null;
+        for(Candidate_Solution c : population){
+                if(c.getFitness() < num){
+                    num = c.getFitness();
+                    out = c;
+            }
+        }
+        return out;
+    }
 
     public double getTotalFitness()
     {
