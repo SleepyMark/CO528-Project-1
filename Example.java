@@ -1,4 +1,4 @@
-//This is my example Solution
+
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,30 +12,21 @@ class Example {
         String name = "Mark Cabrera";
         String login = "MC967";
 
-        System.out.println("These are the instructions of how to use the problem library.  Please make sure you follow the instructions carefully.");
-
-        System.out.println("For the first problem, you need to use Assess.getTest1(double[]).");
-        //An example solution consists of an array  of doubles of size 20 
-        //Allowed values are between -5 and +5 (this is not actually checked, but no point in going beyond these values)
-        //Lower fitness is better. The optimal fitness is 0 (i.e. no negative fitness values). 
-        /*int solSize = 1;
-        //generate a sample solution like so:
-
-        double[] sol1 = new double[solSize];
-        for (int j = 0; j < solSize; j++) {
-        sol1[j] = Math.random() * Math.round(5.12 * (Math.random() - Math.random()));
-        }*/
-
         //My solution
-        int size = 20;      
-        double [] candidates = new double[size];
+        //Population Size
+        int size = 25;
+        //Stores & manipulates the candidate solutions
         Population p = new Population(size);
         
+        //Stores the current population
         ArrayList<Candidate_Solution> currentPopulation;
+        //Stores the new population going to be added
         ArrayList<Candidate_Solution> newPopulation = new ArrayList<Candidate_Solution>();
+        //Stores...what is says
         ArrayList<Candidate_Solution> tempPopulation = new ArrayList<Candidate_Solution>();
-        Candidate_Solution A;
+        //Holds the fitness value, for a given candidate
         double num;
+        //Used for debugging purposes: see line 71
         int loop=1;
         
         while(true){
@@ -48,68 +39,142 @@ class Example {
                 p.checkIfLowest(num);
                 //System.out.println("After: " + Arrays.toString(n.getValues()));
             }   
+            
+            //Capped myself at 10 marks, due to the program taking too long to get any lower
+            if(p.getBestCandidate().getFitness()<1E-10){
+                break;
+            }
+            ///////////////////////////////////////////////////////////////////////////
             currentPopulation = (ArrayList<Candidate_Solution>)p.getCandidates().clone();
             newPopulation.clear();
-            
+            ///////////////////////////////////////////////////////////////////////////
+            // N/4 candidates are chosen, to move onto the new population
             tempPopulation = p.championOperator(size/4);
             newPopulation.addAll(tempPopulation);
-            //Winning candites gets removed from the list
+            //Winning candidates gets removed from the list
             for(Candidate_Solution a : tempPopulation) currentPopulation.remove(a);
-            
+            ///////////////////////////////////////////////////////////////////////////
+            // Championing cadidates, are then crossed-over to create possibly better solutions
             tempPopulation = p.crossOver(size/4, tempPopulation);
             newPopulation.addAll(tempPopulation);
-   
+            ///////////////////////////////////////////////////////////////////////////
+            // N/4 Completly new candidates are generated, to make sure the fitness landscape is explored thoroughly
             tempPopulation.clear();
             for(int newCan=0; newCan<size/2; newCan++) tempPopulation.add(new Candidate_Solution().generate());
             newPopulation.addAll(tempPopulation);
-            
-            /*tempPopulation = p.crossOver(size/4, p.getCandidates());
-            newPopulation.addAll(tempPopulation);*/
+            ///////////////////////////////////////////////////////////////////////////
+            //The old population is emptied, and the new population is added
             p.emptyPopulation();
             p.setPopulation(newPopulation);
+            //Every candiadte is mutated, to help get to the global minimum faster
+            //The biggest problem I had was my mutation rate: See Candidate_Solution.mutate()
             p.mutatePopulation();
+            ///////////////////////////////////////////////////////////////////////////
             
-            
-            
-            if(loop%1000==0){
+            //This part is used to track the populations best candidate
+            /*if(loop%10000==0){
                 System.out.print("Iteration " + loop + ": ");
-                System.out.print(p.getLowest() + ", " + "Population:" + p.getCandidates().size() + ", ");
+                System.out.print(p.getBestCandidate().getFitness() + ", " + "Population:" + p.getCandidates().size() + ", ");
                 System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
             }
-            loop++;
-            if(p.getLowest()<9E-10){
+            loop++;*/
+
+        }
+
+
+        //Population size
+        int itemsSize = 50;
+        //Stores & manipulates candidate solutions
+        Luggage_Population l = new Luggage_Population(itemsSize);
+        //Stores the new population going to be added
+        ArrayList<Luggage_Candidate> currentItems;
+        //Stores the new population going to be added
+        ArrayList<Luggage_Candidate> newItems = new ArrayList<Luggage_Candidate>();
+        ArrayList<Luggage_Candidate> tempItems = new ArrayList<Luggage_Candidate>();
+        //Resets the loop & used for debugging: see line 129=
+        loop=1;
+        Luggage_Candidate b = null;
+        double stuff[] =  new double[2];
+        //Stores the number of new candidates needed to be added
+        int newCan;
+        
+        /*
+         * This algorithm for problem 2 is more biased towards elitism & championing. The point is to build-up the solutions, close to the threshold
+         */
+        
+        
+        //Checks & sets the fitness value of each solution
+        for(Luggage_Candidate i : l.getCandidates()){
+            stuff = Assess.getTest2(i.getValues());
+
+            i.setWeight(stuff[0]);
+            i.setFitness(stuff[1]);
+            l.checkIfHighest(stuff[1]);
+        }   
+        //Candidates that are overmeet the critera, and are eliminated from the population
+        newCan = l.killOff();
+        while(true){
+            l.resetHighest();
+            /////////////////////////////////////////////
+            //Resets the arraylists 
+            currentItems = (ArrayList<Luggage_Candidate>)l.getCandidates().clone();
+            newItems.clear();
+            /////////////////////////////////////////////
+            //Championing operators that meet the requirements,are then chosen against eachother
+            // N/2-(candidatesRemoved) are chosen & added
+            tempItems = l.championOperator((itemsSize/2)-(newCan));
+            newItems.addAll(tempItems);
+            //Winning candidates gets removed from the list
+            for(Luggage_Candidate a : tempItems) currentItems.remove(a);
+            /////////////////////////////////////////////
+            // N/4 candiates are generated from the championing solutions
+            tempItems = l.crossOver((itemsSize/4)-(newCan), tempItems);
+            newItems.addAll(tempItems);
+            tempItems.clear();
+            /////////////////////////////////////////////
+            //New canddiates are generates, to make sure the fitness landscape is explored
+            for(int newLug=0; newLug<newCan; newLug++) tempItems.add(new Luggage_Candidate());
+            newItems.addAll(tempItems);
+            /////////////////////////////////////////////
+            //This bit used for tracking the best fitness in each iteration
+            /*if(loop%1000==0){
+                b = l.getBestCandidate();
+                System.out.print("Iteration " + loop + ": ");
+                System.out.print(b.getFitness()+ ", Weight: " + b.getWeight()  + ", " + "No. of Items: " + (l.getCandidates().size()) + ", ");
+                System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
+            }
+            loop++;*/
+            
+            
+            // The new canddiates are added to he new population
+            l.emptyPopulation();
+            l.setPopulation(newItems);
+            //The enw poopulation is then mutated, to give a better variety in solutions
+            l.mutatePopulation();
+
+            //Candidate solutions are then checked for their fitness & weight
+            for(Luggage_Candidate i : l.getCandidates()){
+                stuff = Assess.getTest2(i.getValues());
+
+                i.setWeight(stuff[0]);
+                i.setFitness(stuff[1]);
+                l.checkIfHighest(stuff[1]);
+            }
+            //Candidates that overmeet the requiements are 'killed'
+            newCan = l.killOff();
+            
+            b = l.getBestCandidate();
+            //This algorithm is supirising efficent, compared to the first one which had problems with a smaller & smaller mutation rate
+            if(b.getFitness() > 206){
                 break;
             }
-            //System.out.println("Time: " + (System.currentTimeMillis() - startT) / 1000.0 + " ");
+
         }
 
-        //get the fitness for a candidate solution in problem 1 like so
-        double fit = p.getLowest();
-
-        //System.out.println("The fitness of your example Solution is: " + fit);
-        System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("Now let us turn to the second problem:");
-        System.out.println("A sample solution in this case is a boolean array of size 100.");
-        System.out.println("I now create a random sample solution and get the weight and utility:");
-
-        //Creating a sample solution for the second problem
-        //The higher the fitness, the better, but be careful of  the weight constraint!
-        boolean[] sol2 = new boolean[100];
-        for (int i = 0; i < sol2.length; i++) {
-            sol2[i] = (Math.random() > 0.5);
-        }
-
-        //Now checking the fitness of the candidate solution
-        double[] tmp = (Assess.getTest2(sol2));
-
-        //The index 0 of tmp gives the weight. Index 1 gives the utility
-        System.out.println("The weight is: " + tmp[0]);
-        System.out.println("The utility is: " + tmp[1]);
 
         //Once completed, your code must submit the results you generated, including your name and login: 
         //Use and adapt  the function below:
-        Assess.checkIn(name, login, p.getBestFit(), sol2);
+        Assess.checkIn(name, login, p.getBestCandidate().getValues(),l.getBestCandidate().getValues());
 
         //Do not delete or alter the next line
         long endT = System.currentTimeMillis();
